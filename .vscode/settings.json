@@ -1,5 +1,5 @@
 {
-  "git.decorations.enabled": false,
+  "git.decorations.enabled": true,
   "scm.diffDecorations": "none",
   "files.exclude": {
     ".vscode": false,
@@ -11,16 +11,15 @@
     ".prettierrc": false
   },
   "editor.formatOnType": true,
-  "breadcrumbs.filePath": "on",
-  "breadcrumbs.symbolPath": "on",
-  "breadcrumbs.enabled": true,
+  "breadcrumbs.filePath": "off",
+  "breadcrumbs.symbolPath": "off",
+  "breadcrumbs.enabled": false,
   "workbench.statusBar.visible": true,
-  "editor.wordBasedSuggestions": false,
+  "editor.wordBasedSuggestions": "off",
   "editor.suggest.snippetsPreventQuickSuggestions": false,
   "editor.suggest.filterGraceful": false,
-  "editor.lineNumbers": "on",
+  "editor.lineNumbers": "off",
   "problems.decorations.enabled": false,
-  "workbench.activityBar.visible": true,
   "editor.formatOnPaste": true,
   "editor.formatOnSave": true,
   "zenMode.centerLayout": false,
