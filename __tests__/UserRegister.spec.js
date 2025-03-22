@@ -15,16 +15,13 @@ const validUser = {
   username: 'user1',
   email: 'user1@mail.com',
   password: 'P4ssword',
-}
+};
 
 const postUser = (user = validUser) => {
-  return request(app)
-    .post('/api/1.0/users')
-    .send(user)
-}
+  return request(app).post('/api/1.0/users').send(user);
+};
 
 describe('User Registration', () => {
-
   it('returns 200 OK when signup request is valid', async () => {
     const response = await postUser();
     expect(response.status).toBe(200);
