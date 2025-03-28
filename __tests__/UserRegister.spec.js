@@ -83,19 +83,49 @@ describe('User Registration', () => {
   });
 
   it.each`
-    field         | expectedMessage
-    ${'username'} | ${'Username cannot be null'}
-    ${'email'}    | ${'E-mail cannot be null'}
-    ${'password'} | ${'Password cannot be null'}
-  `('returns $expectedMessage when $field is null', async ({ field, expectedMessage }) => {
+    field         | value              | expectedMessage
+    ${'username'} | ${null}            | ${'Username cannot be null'}
+    ${'username'} | ${'usr'}           | ${'Must have min 4 and max 32 characters'}
+    ${'username'} | ${'a'.repeat(33)}  | ${'Must have min 4 and max 32 characters'}
+    ${'email'}    | ${null}            | ${'E-mail cannot be null'}
+    ${'email'}    | ${'mail.com'}      | ${'E-mail is not valid'}
+    ${'email'}    | ${'user.mail.com'} | ${'E-mail is not valid'}
+    ${'email'}    | ${'user@mail'}     | ${'E-mail is not valid'}
+    ${'password'} | ${null}            | ${'Password cannot be null'}
+    ${'password'} | ${'P4ss'}          | ${'Password must be at least 6 characters'}
+    ${'password'} | ${'allowercase'}   | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'ALLUPERCASE'}   | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'12312312312'}   | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'lowerandUPPER'} | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'lower4nd12312'} | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+    ${'password'} | ${'UPPER12312'}    | ${'Password must have at least 1 uppercase, 1 lowercase letter and 1 number'}
+  `('returns $expectedMessage when $field is $value', async ({ field, expectedMessage, value }) => {
     const user = {
       username: 'user1',
       email: 'user1@mail.com',
       password: 'P4ssword',
     };
-    user[field] = null;
+    user[field] = value;
     const response = await postUser(user);
     const body = response.body;
     expect(body.validationErrors[field]).toBe(expectedMessage);
+  });
+
+  it('returns E-mail in use when same email is already in use', async () => {
+    await User.create({ ...validUser });
+    const response = await postUser();
+    expect(response.body.validationErrors.email).toBe('E-mail in use');
+  });
+
+  it('returns error for both username is null and email is in use', async () => {
+    await User.create({ ...validUser });
+    const response = await postUser({
+      username: null,
+      email: validUser.email,
+      password: 'P4ssword',
+    });
+
+    const body = response.body;
+    expect(Object.keys(body.validationErrors)).toEqual(['username', 'email']);
   });
 });
